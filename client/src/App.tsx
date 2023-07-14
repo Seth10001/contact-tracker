@@ -1,16 +1,22 @@
 import React from 'react';
 import './App.css';
+import { getLatestChange, changeContact, addContacts, getAvailable } from './sdk'
 
 const DAYS_TIL_REPLACEMENT = 14
 
 export default function App() {
   const [eyeCareInfo, setEyeCareInfo] = React.useState<EyeCareInfo>()
+  const [contactsLeft, setContactsLeft] = React.useState(0)
+  const [showReplaceForm, setReplaceForm] = React.useState(false)
   const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
     getEyeCareInfo()
     .then(setEyeCareInfo)
     .finally(() => setLoading(false))
+
+    getAvailable()
+    .then((res) => setContactsLeft(res.data['available']))
   }, [])
 
   if (loading || eyeCareInfo === undefined) {
@@ -36,6 +42,10 @@ export default function App() {
       <p className="text-center">
         Date of last replacement {lastContactChange.toLocaleDateString()}
       </p>
+      <p className="text-center">
+        Contacts Available: {contactsLeft}
+      </p>
+      {!showReplaceForm ? <>
       {/* Source: https://heyoka.medium.com/scratch-made-svg-donut-pie-charts-in-html5-2c587e935d72  */}
       <svg id="tracker-wheel" className="m-auto" width="100%" height="100%" viewBox="0 0 42 42">
         <circle
@@ -89,11 +99,42 @@ export default function App() {
             lastContactChange: new Date().toJSON()
           }
           updateEyeCareInfo(data)
-          setEyeCareInfo(data) //so the user will see the UI update instantly
+          window.location.reload()
         }}
       >
         Changed Contact Today
       </button>
+      <button
+        className="btn m-auto mt-5"
+        onClick={() => setReplaceForm(true)}
+      >
+        Add Contacts
+      </button>
+      </> : <>
+        <form
+          onSubmit={async (event) => {
+            event.preventDefault()
+            const input = event.currentTarget[0] as HTMLInputElement
+            await addContacts(parseInt(input.value))
+
+            window.location.reload()
+          }}
+        >
+          <label
+            className='m-auto'
+            style={{
+              width: 'fit-content'
+            }}
+          >Number of Contacts Purchased</label>
+          <input name="amount" className='m-auto mt-5' type="number"></input>
+          <button
+            className="btn m-auto mt-5"
+            onClick={() => setReplaceForm(true)}
+          >
+            Submit +
+          </button>
+        </form>
+      </>}
     </div>
   );
 }
@@ -104,21 +145,27 @@ interface EyeCareInfo {
 }
 const EYE_CARE_STORAGE_NAME = "eyeCareInfo"
 
-function getEyeCareInfo(): Promise<EyeCareInfo> {
+async function getEyeCareInfo(): Promise<EyeCareInfo> {
   let eyeCare = localStorage.getItem(EYE_CARE_STORAGE_NAME)
 
-  if (!eyeCare) {
+  if (eyeCare) {
+    const { lastContactChange } = JSON.parse(eyeCare)
+    await changeContact(lastContactChange)
+    localStorage.removeItem(EYE_CARE_STORAGE_NAME)
+  }
+
+  const latest = await getLatestChange()
+  if (!getLatestChange) {
     return Promise.resolve({
       lastContactChange: new Date("2000-01-01").toJSON()
     })
   }
 
-  return Promise.resolve(JSON.parse(eyeCare))
-
-  // return fetch("/api/care")
-  // .then((response) => response.json())
+  return {
+    lastContactChange: latest["createdAt"]
+  }
 }
 
 function updateEyeCareInfo(data: EyeCareInfo) {
-  localStorage.setItem(EYE_CARE_STORAGE_NAME, JSON.stringify(data))
+  changeContact()
 }

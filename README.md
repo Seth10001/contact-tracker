@@ -4,6 +4,6 @@ Keeping track of the most recent time your contacts have been replaced can be an
 
 This is a simple app that tracks how long it's been since a contact replacement. Whenever contacts are replaced simply click the "Changed Contact Today" button.
 
-## Future Features
-- 
-
+## Features
+- Keeps track of available contacts
+- Keeps a record of when you changed your contacts

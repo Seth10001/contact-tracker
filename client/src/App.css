@@ -20,6 +20,10 @@
   display: block;
 }
 
+.mt-5 {
+  margin-top: 10px;
+}
+
 #tracker-wheel {
   max-width: 400px;
 }

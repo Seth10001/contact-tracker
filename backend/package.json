@@ -1,0 +1,35 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha dist/tests/*.test.js",
+    "buid": "tsc",
+    "start": "node dist/server.js",
+    "drop-db": "node_modules/.bin/sequelize db:drop",
+    "create-db": "node_modules/.bin/sequelize db:create",
+    "migrate": "node_modules/.bin/sequelize db:migrate",
+    "seed": "node_modules/.bin/sequelize db:seed:all",
+    "build": "rm -rf ./dist && tsc"
+  },
+  "author": "Raymond Bernardo",
+  "license": "MIT",
+  "dependencies": {
+    "@types/mocha": "^10.0.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "mysql2": "^3.5.1",
+    "sequelize": "^6.32.1",
+    "sequelize-cli": "^6.6.1",
+    "sequelize-typescript": "^2.1.5",
+    "sx-api-error": "^1.0.0",
+    "sx-sequelize-api": "^2.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6"
+  }
+}
