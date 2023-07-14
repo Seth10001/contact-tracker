@@ -37,7 +37,7 @@ export default function App() {
         Date of last replacement {lastContactChange.toLocaleDateString()}
       </p>
       {/* Source: https://heyoka.medium.com/scratch-made-svg-donut-pie-charts-in-html5-2c587e935d72  */}
-      <svg width="100%" height="100%" viewBox="0 0 42 42">
+      <svg id="tracker-wheel" className="m-auto" width="100%" height="100%" viewBox="0 0 42 42">
         <circle
           cx="21"
           cy="21"

@@ -19,3 +19,7 @@
   margin: auto;
   display: block;
 }
+
+#tracker-wheel {
+  max-width: 400px;
+}
